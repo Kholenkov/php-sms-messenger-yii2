@@ -1,0 +1,4 @@
+/app/runtime/
+/app/var/
+/app/vendor/
+/app/.phpunit.result.cache

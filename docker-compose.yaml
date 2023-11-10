@@ -1,0 +1,46 @@
+version: "3"
+networks:
+  sms-messenger-yii2:
+    driver: bridge
+services:
+  sms-messenger-yii2-nginx:
+    container_name: sms-messenger-yii2-nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    depends_on:
+      - sms-messenger-yii2-php-fpm
+      - sms-messenger-yii2-mysql
+    networks:
+      - sms-messenger-yii2
+    ports:
+      - "9511:80"
+    restart: always
+    working_dir: /app
+  sms-messenger-yii2-php-fpm:
+    container_name: sms-messenger-yii2-php-fpm
+    build:
+      context: .
+      dockerfile: ./docker/php-fpm/Dockerfile
+    depends_on:
+      - sms-messenger-yii2-mysql
+    networks:
+      - sms-messenger-yii2
+    restart: always
+    working_dir: /app
+  sms-messenger-yii2-mysql:
+    container_name: sms-messenger-yii2-mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_USER: ${MYSQL_USER}
+    image: mysql:8-debian
+    networks:
+      - sms-messenger-yii2
+    ports:
+      - "9512:3306"
+    restart: always
+    volumes:
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql
