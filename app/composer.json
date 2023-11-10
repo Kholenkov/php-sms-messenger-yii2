@@ -1,0 +1,55 @@
+{
+    "name": "kholenkov/php-sms-messenger-yii2",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Ilya Kholenkov",
+            "email": "kholenkovilya@yandex.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Kholenkov/php-prostor-sms-sdk/"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "guzzlehttp/guzzle": "^7.0.0",
+        "kholenkov/php-prostor-sms-sdk": "@dev",
+        "monolog/monolog": "^3.0.0",
+        "ramsey/uuid": "^4.0.0",
+        "vlucas/phpdotenv": "^v5.0.0",
+        "yidas/yii2-composer-bower-skip": "^2.0.0",
+        "yiisoft/yii2": "^2.0.0"
+    },
+    "require-dev": {
+        "phpstan/extension-installer": "^1.0.0",
+        "phpstan/phpstan": "^1.0.0",
+        "squizlabs/php_codesniffer": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "phpstan/extension-installer": true,
+            "yiisoft/yii2-composer": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "phpcbf": "phpcbf",
+        "phpcs": "phpcs",
+        "phpstan": "phpstan --memory-limit=1G",
+        "test": [
+            "@phpcs",
+            "@phpstan"
+        ]
+    }
+}

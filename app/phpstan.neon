@@ -1,0 +1,20 @@
+parameters:
+
+    bootstrapFiles:
+        - tests/index.php
+
+    checkMissingIterableValueType: false
+
+    excludePaths:
+        - src/views/
+
+    ignoreErrors:
+
+    level: 8
+
+    parallel:
+        maximumNumberOfProcesses: 1
+
+    paths:
+        - src/
+        - tests/

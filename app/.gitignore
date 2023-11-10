@@ -1,0 +1,4 @@
+/runtime/
+/var/
+/vendor/
+/.phpunit.result.cache
