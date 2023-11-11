@@ -10,14 +10,16 @@ use app\vendors\Dto\SendMessageRequest;
 use app\vendors\Dto\SendMessageResponse;
 use app\vo\MessageStatus;
 use Exception;
-use Kholenkov\ProstorSmsSdk;
+use Kholenkov\ProstorSmsSdk\Dto;
+use Kholenkov\ProstorSmsSdk\Interfaces;
+use Kholenkov\ProstorSmsSdk\ValueObject;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 class ProstorSms implements Contract\Messenger
 {
     public function __construct(
-        private ProstorSmsSdk\Interfaces\Messages $api,
+        private Interfaces\Messages $api,
         private LoggerInterface $logger,
     ) {
     }
@@ -25,10 +27,10 @@ class ProstorSms implements Contract\Messenger
     public function getMessageStatus(GetMessageStatusRequest $request): GetMessageStatusResponse
     {
         try {
-            $apiRequest = new ProstorSmsSdk\Dto\Messages\GetStatusRequest(
-                new ProstorSmsSdk\Dto\Messages\MessageIdCollection(
-                    new ProstorSmsSdk\Dto\Messages\MessageId(
-                        new ProstorSmsSdk\ValueObject\MessageId($request->messageId),
+            $apiRequest = new Dto\Messages\GetStatusRequest(
+                new Dto\Messages\MessageIdCollection(
+                    new Dto\Messages\MessageId(
+                        new ValueObject\MessageId($request->messageId),
                     ),
                 ),
             );
@@ -36,7 +38,7 @@ class ProstorSms implements Contract\Messenger
             $apiResponse = $this->api->getStatus($apiRequest);
 
             if (
-                ProstorSmsSdk\ValueObject\ResponseStatus::Ok !== $apiResponse->status
+                ValueObject\ResponseStatus::Ok !== $apiResponse->status
                 || null === $apiResponse->messages
             ) {
                 throw new Exception($apiResponse->description ?: 'Error get status message');
@@ -47,16 +49,16 @@ class ProstorSms implements Contract\Messenger
 
             foreach ($apiResponse->messages as $message) {
                 switch ($message->status) {
-                    case ProstorSmsSdk\ValueObject\MessageStatus::Accepted:
-                    case ProstorSmsSdk\ValueObject\MessageStatus::Queued:
-                    case ProstorSmsSdk\ValueObject\MessageStatus::SmscDelivered:
+                    case ValueObject\MessageStatus::Accepted:
+                    case ValueObject\MessageStatus::Queued:
+                    case ValueObject\MessageStatus::SmscDelivered:
                         $status = MessageStatus::SuccessSend;
                         break;
-                    case ProstorSmsSdk\ValueObject\MessageStatus::Delivered:
+                    case ValueObject\MessageStatus::Delivered:
                         $status = MessageStatus::SuccessDelivery;
                         break;
-                    case ProstorSmsSdk\ValueObject\MessageStatus::DeliveryError:
-                    case ProstorSmsSdk\ValueObject\MessageStatus::SmscRejected:
+                    case ValueObject\MessageStatus::DeliveryError:
+                    case ValueObject\MessageStatus::SmscRejected:
                         $status = MessageStatus::ErrorDelivery;
                         break;
                 }
@@ -73,11 +75,11 @@ class ProstorSms implements Contract\Messenger
     public function sendMessage(SendMessageRequest $request): SendMessageResponse
     {
         try {
-            $apiRequest = new ProstorSmsSdk\Dto\Messages\SendRequest(
-                new ProstorSmsSdk\Dto\Messages\MessageCollection(
-                    new ProstorSmsSdk\Dto\Messages\Message(
-                        new ProstorSmsSdk\ValueObject\MessageId(str_replace('-', '', $request->messageId)),
-                        new ProstorSmsSdk\ValueObject\PhoneNumber($request->phoneNumber),
+            $apiRequest = new Dto\Messages\SendRequest(
+                new Dto\Messages\MessageCollection(
+                    new Dto\Messages\Message(
+                        new ValueObject\MessageId(str_replace('-', '', $request->messageId)),
+                        new ValueObject\PhoneNumber($request->phoneNumber),
                         $request->text,
                     ),
                 ),
@@ -86,7 +88,7 @@ class ProstorSms implements Contract\Messenger
             $apiResponse = $this->api->send($apiRequest);
 
             if (
-                ProstorSmsSdk\ValueObject\ResponseStatus::Ok !== $apiResponse->status
+                ValueObject\ResponseStatus::Ok !== $apiResponse->status
                 || null === $apiResponse->messages
             ) {
                 throw new Exception($apiResponse->description ?: 'Error send message');
@@ -98,16 +100,16 @@ class ProstorSms implements Contract\Messenger
 
             foreach ($apiResponse->messages as $message) {
                 switch ($message->status) {
-                    case ProstorSmsSdk\ValueObject\MessageStatus::Accepted:
-                    case ProstorSmsSdk\ValueObject\MessageStatus::Queued:
-                    case ProstorSmsSdk\ValueObject\MessageStatus::SmscDelivered:
+                    case ValueObject\MessageStatus::Accepted:
+                    case ValueObject\MessageStatus::Queued:
+                    case ValueObject\MessageStatus::SmscDelivered:
                         $status = MessageStatus::SuccessSend;
                         break;
-                    case ProstorSmsSdk\ValueObject\MessageStatus::Delivered:
+                    case ValueObject\MessageStatus::Delivered:
                         $status = MessageStatus::SuccessDelivery;
                         break;
-                    case ProstorSmsSdk\ValueObject\MessageStatus::DeliveryError:
-                    case ProstorSmsSdk\ValueObject\MessageStatus::SmscRejected:
+                    case ValueObject\MessageStatus::DeliveryError:
+                    case ValueObject\MessageStatus::SmscRejected:
                         $status = MessageStatus::ErrorDelivery;
                         break;
                 }

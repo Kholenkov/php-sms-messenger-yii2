@@ -45,7 +45,7 @@ class StatsController extends BaseController
                     if (null !== $currentVendorType) {
                         echo PHP_EOL;
                     }
-                    echo $row['vendor_type'], ' (uuid = ', $row['vendor_uuid'], ')', ':', PHP_EOL;
+                    echo $row['vendor_type'], ' (uuid = ', $row['vendor_uuid'], '):', PHP_EOL;
                     $currentVendorType = $row['vendor_type'];
                 }
                 echo $row['status'], ' = ', $row['qnt'], PHP_EOL;

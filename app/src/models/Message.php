@@ -149,6 +149,7 @@ class Message extends ActiveRecord implements JsonSerializable
     {
         return [
             [['uuid', 'status', 'phoneNumber', 'text', 'vendorUuid', 'createdAt', 'updatedAt'], 'required'],
+
             ['createdAt', 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             ['updatedAt', 'datetime', 'format' => 'php:Y-m-d H:i:s'],
         ];

@@ -114,6 +114,7 @@ class Vendor extends ActiveRecord implements JsonSerializable
     {
         return [
             [['uuid', 'type', 'status', 'priority', 'createdAt', 'updatedAt'], 'required'],
+
             ['createdAt', 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             ['updatedAt', 'datetime', 'format' => 'php:Y-m-d H:i:s'],
         ];
